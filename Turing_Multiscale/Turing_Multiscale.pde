@@ -144,13 +144,17 @@ void draw() {
   float range = (largest - smallest) / 2;
   for (i = 0; i < n; i++) grid[i] = ((grid[i] - smallest) / range) - 1;
   
+  loadPixels();
+  
   for (y = 0; y < height; y++) {
     for (x = 0; x < width; x++) {
        int t = y * width + x;
-       stroke(128 + 128 * grid[t]);
-       point(x,y);
+       float val = 128 + 128 * grid[t];
+       pixels[y*width+x] = color(val, val, val);
     }
   }
+  
+  updatePixels();
   
   // saveFrame("#####.jpg");
   

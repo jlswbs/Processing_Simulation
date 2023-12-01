@@ -92,15 +92,17 @@ void draw() {
   for(int i=0; i<s; i++)
     pat[i] = (pnew[i] - vmin) * 255 / dv;
    
-
+  loadPixels();
+  
   for(int x=0; x<w; x++)
     for(int y=0; y<h; y++) {
       int i = x+y*w;
       int val = (int)pat[i];
-      stroke(val,val,val);
-      point(x,y);     
+      pixels[y*width+x] = color(val, val, val);   
    }
    
+  updatePixels();
+  
   // saveFrame("#####.jpg");
    
 }
