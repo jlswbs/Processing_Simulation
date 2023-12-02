@@ -83,28 +83,30 @@ void draw() {
        
   }
  
-
   float vmin = MAX_FLOAT;
   float vmax = -MAX_FLOAT;
   for(int i=0; i<s; i++)  {
     if (pnew[i] < vmin) vmin = pnew[i];
-  if (pnew[i] > vmax) vmax = pnew[i];
+    if (pnew[i] > vmax) vmax = pnew[i];
   }      
+  
   float dv = vmax - vmin;
-  for(int i=0; i<s; i++)
-    pat[i] = (pnew[i] - vmin) * 255 / dv;
-   
+  for(int i=0; i<s; i++) pat[i] = (pnew[i] - vmin) * 255 / dv;
 
-  for(int x=0; x<w; x++)
-    for(int y=0; y<h; y++) {
-
-      int i = x+y*w;
+  loadPixels();
+  
+  for(int y=0; y<height; y++) {
+    for(int x=0; x<width; x++) {
+    
+      int i = x+y*width;
       float val = pat[i];
-      stroke(val);
-      point(x,y);
+      pixels[y*width+x] = color(val, val, val);
        
     }
+  }
     
+  updatePixels();
+  
   // saveFrame("#####.jpg");
      
 }
