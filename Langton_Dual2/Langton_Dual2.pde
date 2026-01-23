@@ -1,0 +1,132 @@
+// Langton's Ant - two ants with different rules //
+
+int WIDTH = 960;
+int HEIGHT = 540;
+
+int[][] grid;
+
+String rules1 = "RLLLLRRRLLLR";
+String rules2 = "LR";
+
+int N_COLORS;
+
+PImage framebuffer;
+
+boolean saving = false;
+int frameCounter = 0;
+String saveDir = "frames";
+
+class Ant {
+  int x, y;
+  int dir;
+  String rules;
+  int nStates;
+  
+  Ant(int startX, int startY, int startDir, String antRules) {
+    x = startX;
+    y = startY;
+    dir = startDir;
+    rules = antRules;
+    nStates = rules.length();
+  }
+  
+  void step() {
+    int cellState = grid[y][x];
+    
+    char rule = rules.charAt(cellState % nStates);
+    if (rule == 'L') {
+      dir = (dir + 3) % 4;
+    } else if (rule == 'R') {
+      dir = (dir + 1) % 4;
+    }
+    
+    grid[y][x] = (cellState + 1) % N_COLORS;
+    
+    switch(dir) {
+      case 0: y = (y - 1 + HEIGHT) % HEIGHT; break;
+      case 1: x = (x + 1) % WIDTH; break;
+      case 2: y = (y + 1) % HEIGHT; break;
+      case 3: x = (x - 1 + WIDTH) % WIDTH; break;
+    }
+  }
+}
+
+Ant ant1, ant2;
+int stepsPerFrame = 1000;
+
+void setup() {
+  
+  size(100, 100, P2D);
+  surface.setSize(WIDTH, HEIGHT);
+  
+  framebuffer = createImage(WIDTH, HEIGHT, RGB);
+  noSmooth();
+  
+  grid = new int[HEIGHT][WIDTH];
+  
+  N_COLORS = max(rules1.length(), rules2.length());
+  
+  ant1 = new Ant(
+    int(random(WIDTH)),
+    int(random(HEIGHT)),
+    int(random(4)),
+    rules1
+  );
+  
+  ant2 = new Ant(
+    int(random(WIDTH)),
+    int(random(HEIGHT)),
+    int(random(4)),
+    rules2
+  );
+  
+  background(0);
+  frameRate(60);
+
+}
+
+void draw() {
+  
+  for (int i = 0; i < stepsPerFrame; i++) {
+    ant1.step();
+    ant2.step();
+  }
+
+  framebuffer.loadPixels();
+  
+  for (int y = 0; y < HEIGHT; y++) {
+    for (int x = 0; x < WIDTH; x++) {
+      int idx = y * WIDTH + x;
+      framebuffer.pixels[idx] = cellToColor(grid[y][x]);
+    }
+  }
+  
+  framebuffer.updatePixels();
+  image(framebuffer, 0, 0);
+  
+  if (saving) {
+    saveFrame(saveDir + "/frame_" + nf(frameCounter++, 4) + ".png");
+  }
+  
+}
+
+color cellToColor(int state) {
+  
+  float hue = state * (360.0 / N_COLORS);
+  float s = 0.8;
+  float v = 0.8;
+  
+  colorMode(HSB, 360, 1, 1);
+  color c = color(hue, s, v);
+  colorMode(RGB, 255);
+  
+  return c;
+
+}
+
+void keyPressed() {
+  
+  if (key == 'r' || key == 'R') setup();
+  if (key == 's' || key == 'S') saving = !saving;
+
+}
