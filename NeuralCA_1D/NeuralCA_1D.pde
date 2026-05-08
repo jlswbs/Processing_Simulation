@@ -7,8 +7,6 @@ int radius = 3;
 float[] current;
 float[] next;
 
-int generation = 0;
-
 int inputSize = (radius*2 + 1) * 1;
 float[][] weights1;
 float[] bias1;
@@ -43,11 +41,7 @@ void setup() {
   randomizeWeights();
 
   for (int x = 0; x < WIDTH; x++) {
-    current[x] = 0.0;
-  }
-
-  for (int i = WIDTH/2 - 15; i < WIDTH/2 + 15; i++) {
-    current[i] = random(0.6, 1.0);
+    current[x] = random(1.0);
   }
 
   background(0);
@@ -76,22 +70,20 @@ void randomizeWeights() {
 void draw() {
   
   framebuffer.loadPixels();
+  
+  framebuffer.copy(framebuffer, 0, 1, WIDTH, HEIGHT-1, 0, 0, WIDTH, HEIGHT-1);
 
-  int y = generation % (HEIGHT / 2); 
-  int py = y * 2;
+  int y = HEIGHT - 1;
   int fw = framebuffer.width;
 
-  for (int x = 0; x < WIDTH / 2; x++) {
+  for (int x = 0; x < WIDTH; x++) {
     
-    int px = x * 2;
     float state = current[x];
-    int brightness = (int)(state * 255);
-    color c = color(brightness/2, brightness, brightness/1.5);
+    float boosted = pow(state, 0.7); 
+    int brightness = (int)(boosted * 255);
+    color c = color(brightness * 0.6, brightness, brightness * 0.8);
 
-    framebuffer.pixels[py * fw + px] = c;
-    framebuffer.pixels[py * fw + px + 1] = c;
-    framebuffer.pixels[(py + 1) * fw + px] = c;
-    framebuffer.pixels[(py + 1) * fw + px + 1] = c;
+    framebuffer.pixels[y * fw + x] = c;
     
   }
   
@@ -103,8 +95,6 @@ void draw() {
   float[] temp = current;
   current = next;
   next = temp;
-
-  generation++;
   
   if (saving) {
     saveFrame(saveDir + "/frame_" + nf(frameCounter++, 4) + ".png");
@@ -166,8 +156,6 @@ void keyPressed() {
     }
     
     framebuffer.updatePixels();
-
-    generation = 0;
     background(0);
  
   }
