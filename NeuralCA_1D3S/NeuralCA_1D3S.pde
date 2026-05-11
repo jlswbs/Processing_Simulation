@@ -60,13 +60,13 @@ void randomizeWeights() {
     for (int j = 0; j < inputSize; j++) {
       weights1[i][j] = random(-1.0, 1.0);
     }
-    bias1[i] = random(-0.2, 0.2);
+    bias1[i] = random(-0.5, 0.5);
   }
   for (int i = 0; i < CHANNELS; i++) {
     for (int j = 0; j < hiddenSize; j++) {
       weights2[i][j] = random(-1.0, 1.0);
     }
-    bias2[i] = random(-0.1, 0.1);
+    bias2[i] = random(-0.2, 0.2);
   }
 
 }
@@ -114,7 +114,7 @@ void computeNCAGeneration() {
     for (int r = -radius; r <= radius; r++) {
       int nx = (x + r + WIDTH) % WIDTH;
       for (int c = 0; c < CHANNELS; c++) {
-        input[idx++] = current[nx][c];
+        input[idx++] = (current[nx][c] * 2.0) - 1.0; 
       }
     }
 

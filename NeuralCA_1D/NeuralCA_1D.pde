@@ -111,7 +111,7 @@ void computeNCAGeneration() {
 
     for (int r = -radius; r <= radius; r++) {
       int nx = (x + r + WIDTH) % WIDTH;
-      input[idx++] = current[nx];
+      input[idx++] = (current[nx] * 2.0) - 1.0; 
     }
 
     float[] hidden = new float[hiddenSize];
