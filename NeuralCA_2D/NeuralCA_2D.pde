@@ -130,7 +130,7 @@ void computeNextGeneration() {
           int nx = (x + dx + WIDTH) % WIDTH;
           int ny = (y + dy + HEIGHT) % HEIGHT;
 
-          input[idx++] = current[nx][ny];
+          input[idx++] = (current[nx][ny] * 2.0) - 1.0;
         }
       }
 
@@ -155,7 +155,7 @@ void computeNextGeneration() {
 
       output = ((float)Math.tanh(output) + 1.0) * 0.5;
 
-      next[x][y] = output;
+      next[x][y] = lerp(current[x][y], output, 0.5); 
     }
   }
   

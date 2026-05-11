@@ -136,7 +136,7 @@ void computeNextGeneration() {
           int ny = (y + dy + HEIGHT) % HEIGHT;
 
           for (int c = 0; c < CHANNELS; c++) {
-            input[idx++] = current[nx][ny][c];
+            input[idx++] = (current[nx][ny][c] * 2.0) - 1.0; 
           }
         }
       }
@@ -160,7 +160,8 @@ void computeNextGeneration() {
           output += hidden[j] * w2[c][j];
         }
 
-        next[x][y][c] = (float)(Math.tanh(output) * 0.5 + 0.5);
+        float target = (float)(Math.tanh(output) * 0.5 + 0.5);
+        next[x][y][c] = lerp(current[x][y][c], target, 0.5); 
       }
     }
   }
